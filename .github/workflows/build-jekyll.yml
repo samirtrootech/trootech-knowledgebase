@@ -1,33 +1,53 @@
-name: Github Pages
+name: Deploy Jekyll to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Here source code branch is `master`, it could be other branch
+      - main  # Change this if your source code is on another branch
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
 
-      # Use GitHub Actions' cache to cache dependencies on servers
-      - uses: actions/cache@v1
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Setup Ruby and Bundler
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'  # Adjust based on your project
+          bundler-cache: true  # Caches installed gems
+
+      # Cache Bundler dependencies
+      - name: Cache Ruby Gems
+        uses: actions/cache@v3
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      # Use GitHub Deploy Action to build and deploy to Github
-      - uses: jeffreytse/jekyll-deploy-action@v0.5.1
-        with:
-          provider: 'github'
-          token: ${{ secrets.GITHUB_TOKEN }} # It's your Personal Access Token(PAT)
-          repository: ''             # Default is current repository
-          branch: 'gh-pages'         # Default is gh-pages for github provider
-          jekyll_src: './'           # Default is root directory
-          jekyll_cfg: '_config.yml'  # Default is _config.yml
-          jekyll_baseurl: '/jekyll-theme-yat'  # Default is empty
-          cname: ''                  # Default is to not use a cname
-          actor: ''                  # Default is the GITHUB_ACTOR
+      # Install Jekyll and dependencies
+      - name: Install Dependencies
+        run: |
+          gem install bundler
+          bundle install
+
+      # Build Jekyll Site
+      - name: Build Jekyll Site
+        run: bundle exec jekyll build --destination _site
+
+      # # Deploy to GitHub Pages
+      # - name: Deploy to GitHub Pages
+      #   uses: jeffreytse/jekyll-deploy-action@v0.5.1
+      #   with:
+      #     provider: 'github'
+      #     token: ${{ secrets.GITHUB_TOKEN }}  # Uses GitHub-provided token
+      #     branch: 'gh-pages'  # Deployment branch
+      #     jekyll_src: './'  # Root directory for Jekyll
+      #     jekyll_cfg: '_config.yml'  # Jekyll config file
+      #     jekyll_baseurl: ''  # Set a base URL if needed
+      #     cname: ''  # Add a custom domain if necessary
+      #     actor: ${{ github.actor }}  # Uses the GitHub user who triggered the action
