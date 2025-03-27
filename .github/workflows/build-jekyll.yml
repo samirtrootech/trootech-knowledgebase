@@ -3,7 +3,7 @@ name: Deploy Jekyll to GitHub Pages
 on:
   push:
     branches:
-      - main  # Change this if your source code is on another branch
+      - main
 
 jobs:
   build_and_deploy:
@@ -13,14 +13,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Setup Ruby and Bundler
+      # ✅ Use a supported Ruby version (e.g., 3.1)
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7'  # Adjust based on your project
-          bundler-cache: true  # Caches installed gems
+          ruby-version: '3.1'  # Updated to a supported version
+          bundler-cache: true
 
-      # Cache Bundler dependencies
       - name: Cache Ruby Gems
         uses: actions/cache@v3
         with:
@@ -29,25 +28,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      # Install Jekyll and dependencies
       - name: Install Dependencies
         run: |
-          gem install bundler -v 2.4.22
+          gem install bundler
           bundle install
 
-      # Build Jekyll Site
       - name: Build Jekyll Site
         run: bundle exec jekyll build --destination _site
 
-      # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: jeffreytse/jekyll-deploy-action@v0.5.1
         with:
           provider: 'github'
-          token: ${{ secrets.GITHUB_TOKEN }}  # Uses GitHub-provided token
-          branch: 'gh-pages'  # Deployment branch
-          jekyll_src: './'  # Root directory for Jekyll
-          jekyll_cfg: '_config.yml'  # Jekyll config file
-          jekyll_baseurl: ''  # Set a base URL if needed
-          cname: ''  # Add a custom domain if necessary
-          actor: ${{ github.actor }}  # Uses the GitHub user who triggered the action
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: 'gh-pages'
+          jekyll_src: './'
+          jekyll_cfg: '_config.yml'
+          jekyll_baseurl: ''
+          cname: ''
+          actor: ${{ github.actor }}
