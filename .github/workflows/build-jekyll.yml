@@ -39,15 +39,15 @@ jobs:
       - name: Build Jekyll Site
         run: bundle exec jekyll build --destination _site
 
-      # # Deploy to GitHub Pages
-      # - name: Deploy to GitHub Pages
-      #   uses: jeffreytse/jekyll-deploy-action@v0.5.1
-      #   with:
-      #     provider: 'github'
-      #     token: ${{ secrets.GITHUB_TOKEN }}  # Uses GitHub-provided token
-      #     branch: 'gh-pages'  # Deployment branch
-      #     jekyll_src: './'  # Root directory for Jekyll
-      #     jekyll_cfg: '_config.yml'  # Jekyll config file
-      #     jekyll_baseurl: ''  # Set a base URL if needed
-      #     cname: ''  # Add a custom domain if necessary
-      #     actor: ${{ github.actor }}  # Uses the GitHub user who triggered the action
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: jeffreytse/jekyll-deploy-action@v0.5.1
+        with:
+          provider: 'github'
+          token: ${{ secrets.GITHUB_TOKEN }}  # Uses GitHub-provided token
+          branch: 'gh-pages'  # Deployment branch
+          jekyll_src: './'  # Root directory for Jekyll
+          jekyll_cfg: '_config.yml'  # Jekyll config file
+          jekyll_baseurl: ''  # Set a base URL if needed
+          cname: ''  # Add a custom domain if necessary
+          actor: ${{ github.actor }}  # Uses the GitHub user who triggered the action
