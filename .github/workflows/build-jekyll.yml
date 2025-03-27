@@ -17,7 +17,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'  # Adjust based on your project
+          ruby-version: '3.2'  # Adjust based on your project
           bundler-cache: true  # Caches installed gems
 
       # Cache Bundler dependencies
